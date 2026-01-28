@@ -1,0 +1,27 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Plentify Controller">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" type="image/png" href="geyser.png">
+  <link rel="apple-touch-icon" href="geyser.png">
+  <link rel="manifest" href="manifest.json">
+  <title>Plentify Controller</title>
+  <style>
+    body { margin: 0; padding: 0; }
+    iframe { position: absolute; height: 100%; width: 100%; border: none; }
+  </style>
+</head>
+<body>
+  <iframe src="https://script.google.com/macros/s/AKfycbwhJSCAnwtkhGFOl-7R1SZt4aJXvCFhxoaTM1IT67arA-_spILfiTzw3_JKz4YZQXV2rA/exec"></iframe>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
