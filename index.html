@@ -47,9 +47,14 @@
 </head>
 <body>
   <div class="loader" id="loader"><div class="spinner"></div></div>
-  <iframe id="app" src="https://script.google.com/macros/s/AKfycbwhJSCAnwtkhGFOl-7R1SZt4aJXvCFhxoaTM1IT67arA-_spILfiTzw3_JKz4YZQXV2rA/exec"></iframe>
+  <iframe id="app"></iframe>
   <script>
+    var baseUrl = 'https://script.google.com/macros/s/AKfycbwhJSCAnwtkhGFOl-7R1SZt4aJXvCFhxoaTM1IT67arA-_spILfiTzw3_JKz4YZQXV2rA/exec';
     var iframe = document.getElementById('app');
+
+    // If we have a saved token, pass it via URL parameter so GAS can auto-authenticate
+    var savedToken = localStorage.getItem('plentify_token');
+    iframe.src = savedToken ? baseUrl + '?token=' + encodeURIComponent(savedToken) : baseUrl;
 
     // After iframe loads, reveal it
     iframe.addEventListener('load', function() {
@@ -57,22 +62,10 @@
       iframe.style.opacity = '1';
     });
 
-    // Listen for messages from the iframe
+    // Listen for messages from the GAS app (via window.top.postMessage)
     window.addEventListener('message', function(e) {
-      if (e.data && e.data.type === 'plentify_ready') {
-        // GAS app is ready — send saved session token if we have one
-        var savedToken = localStorage.getItem('plentify_token');
-        if (savedToken) {
-          var savedUser = localStorage.getItem('plentify_user');
-          var prefs = null;
-          if (savedUser) {
-            var prefsJson = localStorage.getItem('plentify_prefs_' + savedUser);
-            if (prefsJson) prefs = JSON.parse(prefsJson);
-          }
-          e.source.postMessage({ type: 'plentify_session', token: savedToken, prefs: prefs }, '*');
-        }
-      } else if (e.data && e.data.type === 'plentify_auth') {
-        // New token after PIN success — store token and user
+      if (e.data && e.data.type === 'plentify_auth') {
+        // New token after PIN success — store for next visit
         localStorage.setItem('plentify_token', e.data.token);
         if (e.data.user) {
           localStorage.setItem('plentify_user', e.data.user);
@@ -81,12 +74,6 @@
         // Token expired — clear stored data
         localStorage.removeItem('plentify_token');
         localStorage.removeItem('plentify_user');
-      } else if (e.data && e.data.type === 'plentify_prefs' && e.data.user) {
-        // Save user preferences
-        localStorage.setItem('plentify_prefs_' + e.data.user, JSON.stringify({
-          targetTemp: e.data.targetTemp,
-          duration: e.data.duration
-        }));
       }
     });
 
