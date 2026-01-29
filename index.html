@@ -74,8 +74,16 @@
         // Token expired — clear stored data
         localStorage.removeItem('plentify_token');
         localStorage.removeItem('plentify_user');
+      } else if (e.data && e.data.type === 'plentify_notify') {
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification('Plentify', { body: e.data.message, icon: 'geyser.png' });
+        }
       }
     });
+
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
