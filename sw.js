@@ -20,3 +20,17 @@ self.addEventListener('fetch', function(e) {
     })
   );
 });
+
+self.addEventListener('push', function(event) {
+  var data = { title: 'Plentify', body: 'Heating update' };
+  if (event.data) {
+    try { data = event.data.json(); } catch(e) {}
+  }
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: '/geyser.png',
+      badge: '/geyser.png'
+    })
+  );
+});
