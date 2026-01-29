@@ -21,11 +21,17 @@
   <script>
     var iframe = document.getElementById('app');
 
-    // After iframe loads, send saved session token (if any)
+    // After iframe loads, send saved session token and preferences (if any)
     iframe.addEventListener('load', function() {
       var savedToken = localStorage.getItem('plentify_token');
       if (savedToken) {
-        iframe.contentWindow.postMessage({ type: 'plentify_session', token: savedToken }, '*');
+        var savedUser = localStorage.getItem('plentify_user');
+        var prefs = null;
+        if (savedUser) {
+          var prefsJson = localStorage.getItem('plentify_prefs_' + savedUser);
+          if (prefsJson) prefs = JSON.parse(prefsJson);
+        }
+        iframe.contentWindow.postMessage({ type: 'plentify_session', token: savedToken, prefs: prefs }, '*');
       }
     });
 
@@ -41,6 +47,12 @@
         // Token expired — clear stored data
         localStorage.removeItem('plentify_token');
         localStorage.removeItem('plentify_user');
+      } else if (e.data && e.data.type === 'plentify_prefs' && e.data.user) {
+        // Save user preferences
+        localStorage.setItem('plentify_prefs_' + e.data.user, JSON.stringify({
+          targetTemp: e.data.targetTemp,
+          duration: e.data.duration
+        }));
       }
     });
 
