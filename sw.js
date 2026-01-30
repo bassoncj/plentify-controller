@@ -3,7 +3,7 @@ var CACHE = 'plentify-shell-v1';
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(CACHE).then(function(cache) {
-      return cache.addAll(['/', '/index.html', '/manifest.json', '/geyser.png']);
+      return cache.addAll(['/', '/index.html', '/manifest.json', '/geyser.png', '/flame-badge.png']);
     })
   );
   self.skipWaiting();
@@ -30,7 +30,7 @@ self.addEventListener('push', function(event) {
     self.registration.showNotification(data.title, {
       body: data.body,
       icon: '/geyser.png',
-      badge: '/geyser.png'
+      badge: '/flame-badge.png'
     })
   );
 });
