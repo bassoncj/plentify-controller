@@ -30,7 +30,13 @@ self.addEventListener('push', function(event) {
     self.registration.showNotification(data.title, {
       body: data.body,
       icon: '/geyser.png',
-      badge: '/flame-badge.png'
+      badge: '/flame-badge.png',
+      tag: 'plentify',
+      renotify: false
     })
   );
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
 });
